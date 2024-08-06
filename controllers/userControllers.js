@@ -68,24 +68,37 @@ module.exports = {
             // Find the user by userId
             const user = await User.findById(req.params.userId);
     
-            // Check if the user exists
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
             }
     
-            // Add the friendId to the user's friends array
             user.friends.push(req.params.friendId);
     
-            // Save the updated user document
             await user.save();
-    
-            // Return the updated user object in the response
+
             res.json(user);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Internal Server Error" });
         }
+    },
+    async deleteFriend(req, res) {        try {
+        const user = await User.findById(req.params.userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.friends.pull(req.params.friendId);
+
+        await user.save();
+
+        res.json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
+}
     
 };
 

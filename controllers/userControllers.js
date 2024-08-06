@@ -32,13 +32,59 @@ module.exports = {
             console.error(err);
             res.status(500).json({ error: 'Failed to create user' });
         }
+    },
+    async updateUser(req, res) {
+        try {
+            const updatedUser = await User.findByIdAndUpdate(req.params.userId, req.body, { new: true });
+            
+            if (!updatedUser) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+    
+            res.status(200).json(updatedUser);
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Failed to update user' });
+        }
+    },
+    async deleteUser(req, res) {
+        try {
+            const deletedUser = await User.findByIdAndDelete(req.params.userId);
+            
+            if (!deletedUser) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+    
+            res.status(200).json({ message: 'User deleted successfully' });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Failed to delete user' });
+        }
+    },
+    async addFriend(req, res) {
+        try {
+            // Find the user by userId
+            const user = await User.findById(req.params.userId);
+    
+            // Check if the user exists
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+    
+            // Add the friendId to the user's friends array
+            user.friends.push(req.params.friendId);
+    
+            // Save the updated user document
+            await user.save();
+    
+            // Return the updated user object in the response
+            res.json(user);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Internal Server Error" });
+        }
     }
-
+    
 };
 
 
-// app.post();
-
-// app.put();
-
-// app.delete();

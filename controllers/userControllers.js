@@ -1,4 +1,4 @@
-const {User} = require('../models');
+const {User, Thought} = require('../models');
 
 
 module.exports = {
@@ -55,10 +55,12 @@ module.exports = {
                 return res.status(404).json({ message: 'User not found' });
             }
     
-            res.status(200).json({ message: 'User deleted successfully' });
+            await Thought.deleteMany({ userId: req.params.userId });
+    
+            res.status(200).json({ message: 'User and associated thoughts deleted successfully' });
         } catch (err) {
             console.error(err);
-            res.status(500).json({ error: 'Failed to delete user' });
+            res.status(500).json({ error: 'Failed to delete user and associated thoughts' });
         }
     },
     async addFriend(req, res) {

@@ -27,9 +27,9 @@ module.exports = {
     async createThought(req, res) {
         try {
             const thought = await Thought.create(req.body); 
-            const userId = req.body.userId;
+            const username = req.body.username;
     
-            const user = await User.findById(userId);
+            const user = await User.findOne({ username: username });
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
